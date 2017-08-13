@@ -13,8 +13,8 @@ export default class AccordionItem extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      maxHeight: props.expanded ? 'none' : 0,
-      overflow: props.expanded ? 'visible' : 'hidden',
+      maxHeight: props.isSelected ? 'none' : 0,
+      overflow: props.isSelected ? 'visible' : 'hidden',
       duration: 300
     };
   }
@@ -24,8 +24,8 @@ export default class AccordionItem extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps.expanded !== this.props.expanded) {
-      if (this.props.expanded) {
+    if (prevProps.isSelected !== this.props.isSelected) {
+      if (this.props.isSelected) {
         this.maybeExpand();
       } else {
         this.handleCollapse();
@@ -115,14 +115,14 @@ export default class AccordionItem extends Component {
       className: className(
         'react-sanfona-item',
         this.props.className,
-        { 'react-sanfona-item-expanded': this.props.expanded },
-        this.props.expandedClassName && { [this.props.expandedClassName]: this.props.expanded }
+        { 'react-sanfona-item-expanded': this.props.isSelected },
+        this.props.expandedClassName && { [this.props.expandedClassName]: this.props.isSelected }
       ),
       role: 'tabpanel',
       style: this.props.style
     };
 
-    if (this.props.expanded) {
+    if (this.props.isSelected) {
       props['aria-expanded'] = true;
     } else {
       props['aria-hidden'] = true;
@@ -159,6 +159,7 @@ AccordionItem.propTypes = {
   bodyClassName: PropTypes.string,
   className: PropTypes.string,
   expanded: PropTypes.bool,
+  isSelected: PropType.bool,
   onClick: PropTypes.func,
   title: PropTypes.oneOfType([
     PropTypes.string,
