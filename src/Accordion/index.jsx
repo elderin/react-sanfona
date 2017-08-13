@@ -73,6 +73,7 @@ export default class Accordion extends Component {
     // removes duplicate items in activeItems array
     newState.activeItems = dedupeArr(newState.activeItems);
     this.setState(newState);
+	
   }
 
   renderItems() {

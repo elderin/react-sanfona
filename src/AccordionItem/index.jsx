@@ -1,8 +1,7 @@
 'use strict';
 
 import className from 'classnames';
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import React, { Component, PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import uuid from 'uuid';
 
@@ -10,153 +9,97 @@ import AccordionItemBody from '../AccordionItemBody';
 import AccordionItemTitle from '../AccordionItemTitle';
 
 export default class AccordionItem extends Component {
+
   constructor(props) {
     super(props);
-	this.getIsExpanded = this.getIsExpanded.bind(this);
-	this.setIsExpanded = this.setIsExpanded.bind(this);
-	
-	
-	var isExpanded = null;
-	
-	//first, if available use default	
-	if (props.defaultExpanded != undefined && props.defaultExpanded != null && typeof props.defaultExpanded != 'undefined')
-	{
-		isExpanded = props.defaulExpanded;
-    }
-	else if (props.expanded != undefined && props.expanded != null && typeof props.expanded != 'undefined')
-	{
-		isExpanded = props.expanded;
-    }
-	else
-	{
-		isExpanded = props.isSelected;
-	}
-	
-	
-	
-	//this.setIsExpanded({ expanded: expanded, isSelected: props.isSelected });
-	
     this.state = {
-      maxHeight: props.isSelected ? 'none' : 0,
-      overflow: props.isSelected ? 'visible' : 'hidden',
-      duration: 300,
-	  expanded: props.isSelected
+      maxHeight: props.expanded ? 'none' : 0,
+      overflow: props.expanded ? 'visible' : 'hidden',
+      duration: 300
     };
   }
 
   componentWillMount() {
-    this.uuid = this.props.uuid || uuid.v4();
+    this.uuid = uuid.v4();
   }
 
-  componentDidMount() {
-    this.setMaxHeight();
-  }
-  
-  componentWillReceiveProps(nextProps) {
-    this.setIsExpanded({ expanded: nextProps.expanded, isSelected: nextProps.isSelected });
-  }
-
-  setIsExpanded(props) {
-	  //if per item override is not set, use selection from parent
-	  if (props.expanded != undefined && props.expanded != null && typeof props.expanded != 'undefined')
-	  {
-		  this.setState({ expanded: props.expanded });		  
-	  }
-	  else
-	  {
-		  this.setState({ expanded: props.isSelected });
-	  }
-  }
-  
-  getIsExpanded() {
-	  
-	  return this.state.expanded;
-	  
-	  // //if per item override is not set, use selection from parent
-	  // if (props.expanded != undefined && props.expanded != null && typeof props.expanded != 'undefined')
-	  // {
-		// return props.expanded;		  
-	  // }
-	  // else
-	  // {
-		// return props.isSelected;
-	  // }
-  }
-  
-  componentDidUpdate(prevProps, prevState) {
-    const { disabled, children } = this.props;
-	const expanded = this.state.expanded;
-	
-    if (prevState.expanded !== expanded) {
-      if (disabled) return;
-
-      if (expanded) {
-        this.handleExpand();
+  componentDidUpdate(prevProps) {
+    if (prevProps.expanded !== this.props.expanded) {
+      if (this.props.expanded) {
+        this.maybeExpand();
       } else {
         this.handleCollapse();
       }
-    } else if (prevProps.children !== children) {
-      this.setMaxHeight();
     }
   }
 
-  handleExpand() {
-    const { onExpand, slug } = this.props;
-
-	this.setMaxHeight();
-
-    if (onExpand) {
-      slug ? onExpand(slug) : onExpand();
-    }
-  }
-  
-  
-  
-  collapse() {
-	  handleCollapse();
-  }
-  
-  expand() {
-	  handleExpand();
+  startTransition() {
+    this.setState({
+      maxHeight: this.maxHeight,
+      overflow: 'hidden'
+    });
+    clearTimeout(this.timeout);
   }
 
-  handleCollapse() {
-    const { onClose, slug } = this.props;
-
-    this.setMaxHeight();
-
-    if (onClose) {
-      slug ? onClose(slug) : onClose();
-    }
-  }
-
-  setMaxHeight() {
+  maybeExpand() {
     const bodyNode = ReactDOM.findDOMNode(this.refs.body);
     const images = bodyNode.querySelectorAll('img');
 
-	
     if (images.length > 0) {
-      return this.preloadImages(bodyNode, images);
+      this.preloadImages(bodyNode, images);
+      return;
     }
-	
-	
-    this.setState({
-      maxHeight: this.state.expanded ? bodyNode.scrollHeight + 'px' : 0,
-      overflow: this.state.expanded ? 'visible' : 'hidden',
-    });
+
+    this.handleExpand();
+  }
+
+  handleExpand() {
+    const { onExpand } = this.props;
+
+    this.startTransition();
+    this.timeout = setTimeout(() => {
+      this.setState({
+        maxHeight: 'none',
+        overflow: 'visible'
+      });
+
+      if(onExpand) {
+        onExpand();
+      }
+
+    }, this.state.duration);
+  }
+
+  handleCollapse() {
+    const { onClose } = this.props;
+
+    this.startTransition();
+    this.timeout = setTimeout(() => {
+      this.setState({
+        maxHeight: 0,
+        overflow: 'hidden'
+      });
+
+      if(onClose) {
+        onClose();
+      }
+
+    }, 0);
+  }
+
+  get maxHeight() {
+    const body = ReactDOM.findDOMNode(this.refs.body);
+    return `${body.scrollHeight}px`;
   }
 
   // Wait for images to load before calculating maxHeight
   preloadImages(node, images = []) {
-    let imagesLoaded = 0;
-    const imgLoaded = () => {
+    var imagesLoaded = 0;
+    var imgLoaded = () => {
       imagesLoaded++;
 
       if (imagesLoaded === images.length) {
-        this.setState({
-          maxHeight: this.state.expanded ? node.scrollHeight + 'px' : 0,
-          overflow: 'hidden',
-        });
+        this.handleExpand();
       }
     };
 
@@ -166,34 +109,20 @@ export default class AccordionItem extends Component {
       img.onload = img.onerror = imgLoaded;
     }
   }
-  
 
   getProps() {
-    const props = {
+    var props = {
       className: className(
         'react-sanfona-item',
         this.props.className,
-		{
-          'react-sanfona-item-collapsed':
-            this.state.expanded && !this.props.disabled,
-        },
-        {
-          'react-sanfona-item-expanded':
-            this.state.expanded && !this.props.disabled,
-        },
-        this.props.expandedClassName && {
-          [this.props.expandedClassName]: this.state.expanded,
-        },
-        { 'react-sanfona-item-disabled': this.props.disabled },
-        this.props.disabledClassName && {
-          [this.props.disabledClassName]: this.props.disabled,
-        }
+        { 'react-sanfona-item-expanded': this.props.expanded },
+        this.props.expandedClassName && { [this.props.expandedClassName]: this.props.expanded }
       ),
       role: 'tabpanel',
-      style: this.props.style,
+      style: this.props.style
     };
 
-    if (this.state.expanded) {
+    if (this.props.expanded) {
       props['aria-expanded'] = true;
     } else {
       props['aria-hidden'] = true;
@@ -208,37 +137,34 @@ export default class AccordionItem extends Component {
         <AccordionItemTitle
           className={this.props.titleClassName}
           title={this.props.title}
-          onClick={this.props.disabled ? null : this.props.onClick}
-          titleColor={this.props.titleColor}
-          uuid={this.uuid}
-        />
+          onClick={this.props.onClick}
+          titleColor= {this.props.titleColor}
+          uuid={this.uuid} />
         <AccordionItemBody
           maxHeight={this.state.maxHeight}
           duration={this.state.duration}
           className={this.props.bodyClassName}
           overflow={this.state.overflow}
           ref="body"
-          uuid={this.uuid}
-        >
+          uuid={this.uuid}>
           {this.props.children}
         </AccordionItemBody>
       </div>
     );
   }
+
 }
 
 AccordionItem.propTypes = {
   bodyClassName: PropTypes.string,
   className: PropTypes.string,
-  defautlExpanded: PropTypes.bool,
   expanded: PropTypes.bool,
-  isSelected: PropTypes.bool,
   onClick: PropTypes.func,
-  title: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
+  title: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.node,
+  ]),
   expandedClassName: PropTypes.string,
   style: PropTypes.object,
-  titleClassName: PropTypes.string,
-  disabled: PropTypes.bool,
-  disabledClassName: PropTypes.string,
-  uuid: PropTypes.string,
+  titleClassName: PropTypes.string
 };
