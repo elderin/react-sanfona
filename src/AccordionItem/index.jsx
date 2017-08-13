@@ -32,7 +32,7 @@ export default class AccordionItem extends Component {
   
   getIsExpanded(props) {
 	  //if per item override is not set, use selection from parent
-	  if (props.expanded != undefined && props.expanded == null && typeof props.expanded != 'undefined')
+	  if (props.expanded != undefined && props.expanded != null && typeof props.expanded != 'undefined')
 	  {
 		  return props.expanded;		  
 	  }
