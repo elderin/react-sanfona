@@ -17,22 +17,30 @@ export default class Accordion extends Component {
   constructor(props) {
     super(props);
     this.updateActiveItems = this.updateActiveItems.bind(this);
-    this.updateActiveItems(props);
+	
+	this.updateActiveItems(props.defaultActiveItems);
+	
   }
+  
 
   componentWillReceiveProps(nextProps) {
-    this.updateActiveItems(nextProps);
+    this.updateActiveItems(nextProps.activeItems);
   }
 
-  updateActiveItems(props) {
-    let activeItems = arrayify(props.activeItems);
+  updateActiveItems(items) {
+    
+	//if null, don't update
+	if (items != undefined && items != null && typeof items != 'undefined')
+	{
+		let activeItems = arrayify(items);
 
-    // can't have multiple active items, just use the first one
-    if (!props.allowMultiple) activeItems = [activeItems[0]];
+		// can't have multiple active items, just use the first one
+		if (!this.props.allowMultiple) activeItems = [activeItems[0]];
 
-    this.state = {
-      activeItems,
-    };
+		this.state = {
+		  activeItems,
+		};
+	}
   }
 
   handleClick(index) {
@@ -81,7 +89,7 @@ export default class Accordion extends Component {
         this.state.activeItems.indexOf(key) !== -1 && !item.props.disabled;
 
       return React.cloneElement(item, {
-        expanded: expanded,
+        isSelected: expanded,
         key: key,
         onClick: this.handleClick.bind(this, key),
         ref: `item-${key}`,
@@ -103,13 +111,15 @@ export default class Accordion extends Component {
 }
 
 Accordion.defaultProps = {
-  activeItems: [0],
+  activeItems: null,
+  defaultActiveItems:[0],
   allowMultiple: false,
 };
 
 Accordion.propTypes = {
   allowMultiple: PropTypes.bool,
   activeItems: PropTypes.oneOfType([PropTypes.number, PropTypes.array]),
+  defaultActiveItems: PropTypes.oneOfType([PropTypes.number, PropTypes.array]),
   className: PropTypes.string,
   onChange: PropTypes.func,
   style: PropTypes.object,
