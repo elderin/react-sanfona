@@ -13,10 +13,26 @@ export default class AccordionItem extends Component {
   constructor(props) {
     super(props);
 	this.getIsExpanded = this.getIsExpanded.bind(this);
+	this.setIsExpanded = this.setIsExpanded.bind(this);
+	
+	
+	let expanded = null;
+	
+	//first, if available use default	
+	if (props.defaultExpanded != undefined && props.defaultExpanded != null && typeof props.defaultExpanded != 'undefined')
+	{
+		expanded = props.defaulExpanded;
+    }
+	else if (props.expanded != undefined && props.expanded != null && typeof props.expanded != 'undefined')
+	{
+		expanded = props.expanded;
+    }
+	
+	this.setIsExpanded({ expanded: expanded, isSelected: props.isSelected });
 	
     this.state = {
-      maxHeight: this.getIsExpanded(props) ? 'none' : 0,
-      overflow: this.getIsExpanded(props) ? 'visible' : 'hidden',
+      maxHeight: this.getIsExpanded() ? 'none' : 0,
+      overflow: this.getIsExpanded() ? 'visible' : 'hidden',
       duration: 300,
     };
   }
@@ -28,23 +44,40 @@ export default class AccordionItem extends Component {
   componentDidMount() {
     this.setMaxHeight();
   }
-
   
-  getIsExpanded(props) {
+  componentWillReceiveProps(nextProps) {
+    this.setIsExpanded({ expanded: nextProps.expanded, isSelected: nextProps.isSelected });
+  }
+
+  setIsExpanded(props) {
 	  //if per item override is not set, use selection from parent
 	  if (props.expanded != undefined && props.expanded != null && typeof props.expanded != 'undefined')
 	  {
-		  return props.expanded;		  
+		  this.state.expanded = props.expanded;		  
 	  }
 	  else
 	  {
-		  return props.isSelected;
+		  this.state.expanded = props.isSelected;
 	  }
+  }
+  
+  getIsExpanded(props) {
+	  
+	  return this.state.expanded;
+	  // //if per item override is not set, use selection from parent
+	  // if (props.expanded != undefined && props.expanded != null && typeof props.expanded != 'undefined')
+	  // {
+		  // return props.expanded;		  
+	  // }
+	  // else
+	  // {
+		  // return props.isSelected;
+	  // }
   }
   
   componentDidUpdate(prevProps) {
     const { disabled, children } = this.props;
-	const expanded = this.getIsExpanded(this.props);
+	const expanded = this.getIsExpanded();
 	
     if (this.getIsExpanded(prevProps) !== expanded) {
       if (disabled) return;
@@ -88,8 +121,8 @@ export default class AccordionItem extends Component {
     }
 
     this.setState({
-      maxHeight: this.getIsExpanded(this.props) ? bodyNode.scrollHeight + 'px' : 0,
-      overflow: this.getIsExpanded(this.props) ? 'visible' : 'hidden',
+      maxHeight: this.getIsExpanded() ? bodyNode.scrollHeight + 'px' : 0,
+      overflow: this.getIsExpanded() ? 'visible' : 'hidden',
     });
   }
 
@@ -101,7 +134,7 @@ export default class AccordionItem extends Component {
 
       if (imagesLoaded === images.length) {
         this.setState({
-          maxHeight: this.getIsExpanded(this.props) ? node.scrollHeight + 'px' : 0,
+          maxHeight: this.getIsExpanded() ? node.scrollHeight + 'px' : 0,
           overflow: 'hidden',
         });
       }
@@ -122,10 +155,10 @@ export default class AccordionItem extends Component {
         this.props.className,
         {
           'react-sanfona-item-expanded':
-            this.getIsExpanded(this.props) && !this.props.disabled,
+            this.getIsExpanded() && !this.props.disabled,
         },
         this.props.expandedClassName && {
-          [this.props.expandedClassName]: this.getIsExpanded(this.props),
+          [this.props.expandedClassName]: this.getIsExpanded(),
         },
         { 'react-sanfona-item-disabled': this.props.disabled },
         this.props.disabledClassName && {
@@ -136,7 +169,7 @@ export default class AccordionItem extends Component {
       style: this.props.style,
     };
 
-    if (this.getIsExpanded(this.props)) {
+    if (this.getIsExpanded()) {
       props['aria-expanded'] = true;
     } else {
       props['aria-hidden'] = true;
@@ -173,6 +206,7 @@ export default class AccordionItem extends Component {
 AccordionItem.propTypes = {
   bodyClassName: PropTypes.string,
   className: PropTypes.string,
+  defautlExpanded: PropTypes.bool,
   expanded: PropTypes.bool,
   isSelected: PropTypes.bool,
   onClick: PropTypes.func,
