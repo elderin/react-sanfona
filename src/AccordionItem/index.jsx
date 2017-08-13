@@ -159,7 +159,7 @@ AccordionItem.propTypes = {
   bodyClassName: PropTypes.string,
   className: PropTypes.string,
   expanded: PropTypes.bool,
-  isSelected: PropType.bool,
+  isSelected: PropTypes.bool,
   onClick: PropTypes.func,
   title: PropTypes.oneOfType([
     PropTypes.string,
