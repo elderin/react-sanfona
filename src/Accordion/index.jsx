@@ -22,7 +22,7 @@ export default class Accordion extends Component {
 	
   }
   
-  collapseAll {
+  collapseAll() {
 	  this.setState({ activeItems: [] });
   }
 
