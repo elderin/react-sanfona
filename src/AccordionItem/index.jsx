@@ -16,31 +16,31 @@ export default class AccordionItem extends Component {
 	this.setIsExpanded = this.setIsExpanded.bind(this);
 	
 	
-	let expanded = null;
+	var isExpanded = null;
 	
 	//first, if available use default	
 	if (props.defaultExpanded != undefined && props.defaultExpanded != null && typeof props.defaultExpanded != 'undefined')
 	{
-		expanded = props.defaulExpanded;
+		isExpanded = props.defaulExpanded;
     }
 	else if (props.expanded != undefined && props.expanded != null && typeof props.expanded != 'undefined')
 	{
-		expanded = props.expanded;
+		isExpanded = props.expanded;
     }
 	else
 	{
-		expanded = props.isSelected;
+		isExpanded = props.isSelected;
 	}
 	
 	
 	
 	//this.setIsExpanded({ expanded: expanded, isSelected: props.isSelected });
-	console.log("1", expanded);
+	
     this.state = {
-      maxHeight: expanded ? 'none' : 0,
-      overflow: expanded ? 'visible' : 'hidden',
+      maxHeight: isExpanded ? 'none' : 0,
+      overflow: isExpanded ? 'visible' : 'hidden',
       duration: 300,
-	  expanded: expanded
+	  expanded: isExpanded
     };
   }
 
@@ -139,7 +139,6 @@ export default class AccordionItem extends Component {
       return this.preloadImages(bodyNode, images);
     }
 	
-	console.log("2", this.state.expanded);
 	
     this.setState({
       maxHeight: this.state.expanded ? bodyNode.scrollHeight + 'px' : 0,
