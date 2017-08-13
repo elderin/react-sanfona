@@ -35,7 +35,7 @@ export default class Accordion extends Component {
   updateActiveItems(activeItems) {
     
 	//if null, don't update
-	if (activeItems != null)
+	if (activeItems != undefined && activeItems != null && typeof activeItems != 'undefined')
 	{
 		
 		let activeItems = arrayify(activeItems);
