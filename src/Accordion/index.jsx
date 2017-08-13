@@ -17,22 +17,28 @@ export default class Accordion extends Component {
   constructor(props) {
     super(props);
     this.updateActiveItems = this.updateActiveItems.bind(this);
-    this.updateActiveItems(props);
+    this.updateActiveItems(props.defaultActiveItems);
   }
 
   componentWillReceiveProps(nextProps) {
-    this.updateActiveItems(nextProps);
+    this.updateActiveItems(nextProps.activeItems);
   }
 
   updateActiveItems(props) {
-    let activeItems = arrayify(props.activeItems);
+    
+	//if null, don't update
+	if (props.activeItems != null)
+	{
+		
+		let activeItems = arrayify(props.activeItems);
 
-    // can't have multiple active items, just use the first one
-    if (!props.allowMultiple) activeItems = [activeItems[0]];
+		// can't have multiple active items, just use the first one
+		if (!props.allowMultiple) activeItems = [activeItems[0]];
 
-    this.state = {
-      activeItems,
-    };
+		this.state = {
+		  activeItems,
+		};
+	}
   }
 
   handleClick(index) {
@@ -110,6 +116,7 @@ Accordion.defaultProps = {
 Accordion.propTypes = {
   allowMultiple: PropTypes.bool,
   activeItems: PropTypes.oneOfType([PropTypes.number, PropTypes.array]),
+  defaultActiveItems: PropTypes.oneOfType([PropTypes.number, PropTypes.array]),
   className: PropTypes.string,
   onChange: PropTypes.func,
   style: PropTypes.object,

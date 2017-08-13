@@ -1,12 +1,12 @@
 {
-  "name": "react-sanfona",
+  "name": "react-sanfona-keona",
   "version": "0.2.3",
   "description": "React accessible accordion component",
   "main": "./dist-modules/index.js",
   "scripts": {
     "bundle-demo": "webpack --config webpack.config.demo.js",
     "bundle-dist": "webpack --config webpack.config.dist.js",
-    "bundle-modules": "rm -rf dist-modules/* --force && babel src --loose --out-dir dist-modules",
+    "bundle-modules": "rimraf dist-modules/* --force && babel src --loose --out-dir dist-modules",
     "demo": "webpack-dev-server --config webpack.config.demo.js",
     "lint": "eslint ./src",
     "test": "npm run lint && mocha -R spec --compilers jsx:./test/compiler ./src/**/test.jsx",
@@ -14,7 +14,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/daviferreira/react-sanfona.git"
+    "url": "git+https://github.com/daviferreira/react-sanfona.git"
   },
   "keywords": [
     "react",
@@ -69,5 +69,8 @@
     "unexpected-sinon": "10.7.1",
     "webpack": "2.2.1",
     "webpack-dev-server": "2.4.2"
+  },
+  "directories": {
+    "test": "test"
   }
 }
