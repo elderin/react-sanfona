@@ -35,8 +35,8 @@ export default class AccordionItem extends Component {
 	//this.setIsExpanded({ expanded: expanded, isSelected: props.isSelected });
 	
     this.state = {
-      maxHeight: this.getIsExpanded() ? 'none' : 0,
-      overflow: this.getIsExpanded() ? 'visible' : 'hidden',
+      maxHeight: expanded ? 'none' : 0,
+      overflow: expanded ? 'visible' : 'hidden',
       duration: 300,
 	  expanded: expanded
     };
