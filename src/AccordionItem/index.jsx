@@ -27,13 +27,18 @@ export default class AccordionItem extends Component {
 	{
 		expanded = props.expanded;
     }
+	else
+	{
+		expanded = props.isSelected;
+	}
 	
-	this.setIsExpanded({ expanded: expanded, isSelected: props.isSelected });
+	//this.setIsExpanded({ expanded: expanded, isSelected: props.isSelected });
 	
     this.state = {
       maxHeight: this.getIsExpanded() ? 'none' : 0,
       overflow: this.getIsExpanded() ? 'visible' : 'hidden',
       duration: 300,
+	  expanded: expanded
     };
   }
 
@@ -53,25 +58,26 @@ export default class AccordionItem extends Component {
 	  //if per item override is not set, use selection from parent
 	  if (props.expanded != undefined && props.expanded != null && typeof props.expanded != 'undefined')
 	  {
-		  this.state = { expanded: props.expanded };		  
+		  this.setState({ expanded: props.expanded });		  
 	  }
 	  else
 	  {
-		  this.state = { expanded: props.isSelected };
+		  this.setState({ expanded: props.isSelected });
 	  }
   }
   
-  getIsExpanded(props) {
+  getIsExpanded() {
 	  
 	  return this.state.expanded;
+	  
 	  // //if per item override is not set, use selection from parent
 	  // if (props.expanded != undefined && props.expanded != null && typeof props.expanded != 'undefined')
 	  // {
-		  // return props.expanded;		  
+		// return props.expanded;		  
 	  // }
 	  // else
 	  // {
-		  // return props.isSelected;
+		// return props.isSelected;
 	  // }
   }
   
@@ -79,7 +85,7 @@ export default class AccordionItem extends Component {
     const { disabled, children } = this.props;
 	const expanded = this.getIsExpanded();
 	
-    if (this.getIsExpanded(prevProps) !== expanded) {
+    if (this.getIsExpanded() !== expanded) {
       if (disabled) return;
 
       if (expanded) {
