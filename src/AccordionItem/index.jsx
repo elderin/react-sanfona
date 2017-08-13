@@ -107,6 +107,16 @@ export default class AccordionItem extends Component {
       slug ? onExpand(slug) : onExpand();
     }
   }
+  
+  
+  
+  collapse() {
+	  handleCollapse();
+  }
+  
+  expand() {
+	  handleExpand();
+  }
 
   handleCollapse() {
     const { onClose, slug } = this.props;
