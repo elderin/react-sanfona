@@ -22,6 +22,9 @@ export default class Accordion extends Component {
 	
   }
   
+  collapseAll {
+	  this.setState({ activeItems: [] });
+  }
 
   componentWillReceiveProps(nextProps) {
     this.updateActiveItems(nextProps.activeItems);
