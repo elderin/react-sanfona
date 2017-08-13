@@ -125,6 +125,8 @@ export default class AccordionItem extends Component {
     if (images.length > 0) {
       return this.preloadImages(bodyNode, images);
     }
+	
+	console.log("1", this.getIsExpanded());
 
     this.setState({
       maxHeight: this.getIsExpanded() ? bodyNode.scrollHeight + 'px' : 0,
