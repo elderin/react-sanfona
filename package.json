@@ -1,6 +1,6 @@
 {
   "name": "react-sanfona-keona",
-  "version": "0.2.17",
+  "version": "0.2.18",
   "description": "React accessible accordion component",
   "main": "./dist-modules/index.js",
   "scripts": {
