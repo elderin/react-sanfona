@@ -81,11 +81,11 @@ export default class AccordionItem extends Component {
 	  // }
   }
   
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps, prevState) {
     const { disabled, children } = this.props;
-	const expanded = this.getIsExpanded();
+	const expanded = this.state.expanded;
 	
-    if (this.getIsExpanded() !== expanded) {
+    if (prevState.expanded !== expanded) {
       if (disabled) return;
 
       if (expanded) {
@@ -101,7 +101,7 @@ export default class AccordionItem extends Component {
   handleExpand() {
     const { onExpand, slug } = this.props;
 
-    this.setMaxHeight();
+	this.setMaxHeight();
 
     if (onExpand) {
       slug ? onExpand(slug) : onExpand();
@@ -122,15 +122,15 @@ export default class AccordionItem extends Component {
     const bodyNode = ReactDOM.findDOMNode(this.refs.body);
     const images = bodyNode.querySelectorAll('img');
 
+	
     if (images.length > 0) {
       return this.preloadImages(bodyNode, images);
     }
 	
-	console.log("1", this.getIsExpanded());
-
+	
     this.setState({
-      maxHeight: this.getIsExpanded() ? bodyNode.scrollHeight + 'px' : 0,
-      overflow: this.getIsExpanded() ? 'visible' : 'hidden',
+      maxHeight: this.state.expanded ? bodyNode.scrollHeight + 'px' : 0,
+      overflow: this.state.expanded ? 'visible' : 'hidden',
     });
   }
 
@@ -142,7 +142,7 @@ export default class AccordionItem extends Component {
 
       if (imagesLoaded === images.length) {
         this.setState({
-          maxHeight: this.getIsExpanded() ? node.scrollHeight + 'px' : 0,
+          maxHeight: this.state.expanded ? node.scrollHeight + 'px' : 0,
           overflow: 'hidden',
         });
       }
@@ -163,10 +163,10 @@ export default class AccordionItem extends Component {
         this.props.className,
         {
           'react-sanfona-item-expanded':
-            this.getIsExpanded() && !this.props.disabled,
+            this.state.expanded && !this.props.disabled,
         },
         this.props.expandedClassName && {
-          [this.props.expandedClassName]: this.getIsExpanded(),
+          [this.props.expandedClassName]: this.state.expanded,
         },
         { 'react-sanfona-item-disabled': this.props.disabled },
         this.props.disabledClassName && {
@@ -177,7 +177,7 @@ export default class AccordionItem extends Component {
       style: this.props.style,
     };
 
-    if (this.getIsExpanded()) {
+    if (this.state.expanded) {
       props['aria-expanded'] = true;
     } else {
       props['aria-hidden'] = true;
