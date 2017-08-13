@@ -89,7 +89,7 @@ export default class Accordion extends Component {
         this.state.activeItems.indexOf(key) !== -1 && !item.props.disabled;
 
       return React.cloneElement(item, {
-        isSelected: expanded,
+        expanded: expanded,
         key: key,
         onClick: this.handleClick.bind(this, key),
         ref: `item-${key}`,
