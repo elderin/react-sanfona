@@ -18,15 +18,10 @@ export default class Accordion extends Component {
     super(props);
     this.updateActiveItems = this.updateActiveItems.bind(this);
 	
-	if (this.props.defaultActiveItems == undefined || this.props.defaultActiveItems == null || typeof this.props.defaultActiveItems == 'undefined') 
-	{
-		this.updateActiveItems(0);
-	}
-	else
-	{
-		this.updateActiveItems(props.defaultActiveItems);
-	}
+	this.updateActiveItems(props.defaultActiveItems);
+	
   }
+  
 
   componentWillReceiveProps(nextProps) {
     this.updateActiveItems(nextProps.activeItems);
@@ -94,7 +89,7 @@ export default class Accordion extends Component {
         this.state.activeItems.indexOf(key) !== -1 && !item.props.disabled;
 
       return React.cloneElement(item, {
-        expanded: expanded,
+        isSelected: expanded,
         key: key,
         onClick: this.handleClick.bind(this, key),
         ref: `item-${key}`,
@@ -116,7 +111,8 @@ export default class Accordion extends Component {
 }
 
 Accordion.defaultProps = {
-  activeItems: [0],
+  activeItems: null,
+  defaultActiveItems:[0],
   allowMultiple: false,
 };
 

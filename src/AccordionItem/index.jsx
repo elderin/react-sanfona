@@ -12,9 +12,11 @@ import AccordionItemTitle from '../AccordionItemTitle';
 export default class AccordionItem extends Component {
   constructor(props) {
     super(props);
+	this.getIsExpanded = this.getIsExpanded.bind(this);
+	
     this.state = {
-      maxHeight: props.expanded ? 'none' : 0,
-      overflow: props.expanded ? 'visible' : 'hidden',
+      maxHeight: this.getIsExpanded(props) ? 'none' : 0,
+      overflow: this.getIsExpanded(props) ? 'visible' : 'hidden',
       duration: 300,
     };
   }
@@ -27,10 +29,24 @@ export default class AccordionItem extends Component {
     this.setMaxHeight();
   }
 
+  
+  getIsExpanded(props) {
+	  //if per item override is not set, use selection from parent
+	  if (props.expanded != undefined && props.expanded == null && typeof props.expanded != 'undefined')
+	  {
+		  return props.IsSelected;
+	  }
+	  else
+	  {
+		  return props.expanded;
+	  }
+  }
+  
   componentDidUpdate(prevProps) {
-    const { expanded, disabled, children } = this.props;
-
-    if (prevProps.expanded !== expanded) {
+    const { disabled, children } = this.props;
+	const expanded = this.getIsExpanded(this.props);
+	
+    if (this.getIsExpanded(prevProps) !== expanded) {
       if (disabled) return;
 
       if (expanded) {
@@ -72,8 +88,8 @@ export default class AccordionItem extends Component {
     }
 
     this.setState({
-      maxHeight: this.props.expanded ? bodyNode.scrollHeight + 'px' : 0,
-      overflow: this.props.expanded ? 'visible' : 'hidden',
+      maxHeight: this.getIsExpanded(this.props) ? bodyNode.scrollHeight + 'px' : 0,
+      overflow: this.getIsExpanded(this.props) ? 'visible' : 'hidden',
     });
   }
 
@@ -85,7 +101,7 @@ export default class AccordionItem extends Component {
 
       if (imagesLoaded === images.length) {
         this.setState({
-          maxHeight: this.props.expanded ? node.scrollHeight + 'px' : 0,
+          maxHeight: this.getIsExpanded(this.props) ? node.scrollHeight + 'px' : 0,
           overflow: 'hidden',
         });
       }
@@ -97,6 +113,7 @@ export default class AccordionItem extends Component {
       img.onload = img.onerror = imgLoaded;
     }
   }
+  
 
   getProps() {
     const props = {
@@ -105,10 +122,10 @@ export default class AccordionItem extends Component {
         this.props.className,
         {
           'react-sanfona-item-expanded':
-            this.props.expanded && !this.props.disabled,
+            this.getIsExpanded(this.props) && !this.props.disabled,
         },
         this.props.expandedClassName && {
-          [this.props.expandedClassName]: this.props.expanded,
+          [this.props.expandedClassName]: this.getIsExpanded(this.props),
         },
         { 'react-sanfona-item-disabled': this.props.disabled },
         this.props.disabledClassName && {
@@ -119,7 +136,7 @@ export default class AccordionItem extends Component {
       style: this.props.style,
     };
 
-    if (this.props.expanded) {
+    if (this.getIsExpanded(this.props)) {
       props['aria-expanded'] = true;
     } else {
       props['aria-hidden'] = true;
@@ -157,6 +174,7 @@ AccordionItem.propTypes = {
   bodyClassName: PropTypes.string,
   className: PropTypes.string,
   expanded: PropTypes.bool,
+  isSelected: PropTypes.bool,
   onClick: PropTypes.func,
   title: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
   expandedClassName: PropTypes.string,
