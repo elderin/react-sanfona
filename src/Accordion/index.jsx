@@ -17,7 +17,15 @@ export default class Accordion extends Component {
   constructor(props) {
     super(props);
     this.updateActiveItems = this.updateActiveItems.bind(this);
-    this.updateActiveItems(props.defaultActiveItems);
+	
+	if (this.props.defaultActiveItems == null)
+	{
+		this.updateActiveItems(0);
+	}
+	else
+	{
+		this.updateActiveItems(props.defaultActiveItems);
+	}
   }
 
   componentWillReceiveProps(nextProps) {
