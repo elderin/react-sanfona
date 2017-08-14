@@ -18,7 +18,7 @@ export default class Accordion extends Component {
     super(props);
     this.updateActiveItems = this.updateActiveItems.bind(this);
 	
-	this.updateActiveItems(props.defaultActiveItems);
+	this.updateActiveItems(props.defaultActiveItems, props);
 	
   }
   
@@ -27,10 +27,10 @@ export default class Accordion extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    this.updateActiveItems(nextProps.activeItems);
+    this.updateActiveItems(nextProps.activeItems, nextProps);
   }
 
-  updateActiveItems(items) {
+  updateActiveItems(items, props) {
     
 	//if null, don't update
 	if (items != undefined && items != null && typeof items != 'undefined')
@@ -38,7 +38,7 @@ export default class Accordion extends Component {
 		let activeItems = arrayify(items);
 
 		// can't have multiple active items, just use the first one
-		if (!this.props.allowMultiple) activeItems = [activeItems[0]];
+		if (!props.allowMultiple) activeItems = [activeItems[0]];
 
 		this.state = {
 		  activeItems,
