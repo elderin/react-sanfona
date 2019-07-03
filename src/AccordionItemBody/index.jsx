@@ -14,9 +14,10 @@ export default class AccordionItemBody extends Component {
 
     return (
       <div
-        aria-labelledby={`react-safona-item-title-${this.props.uuid}`}
+        aria-labelledby={`react-sanfona-item-title-${this.props.uuid}`}
+        role="tab"
         className={className('react-sanfona-item-body', this.props.className)}
-        id={`react-safona-item-body-${this.props.uuid}`}
+        id={`react-sanfona-item-body-${this.props.uuid}`}
         style={style}
       >
         <div className="react-sanfona-item-body-wrapper">

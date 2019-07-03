@@ -17,7 +17,7 @@ export default class AccordionItemTitle extends Component {
     if (typeof title === 'object') {
       return React.cloneElement(title, {
         onClick: this.props.onClick,
-        id: `react-safona-item-title-${this.props.uuid}`,
+        id: `react-sanfona-item-title-${this.props.uuid}`,
         'aria-controls': `react-sanfona-item-body-${this.props.uuid}`,
       });
     }
@@ -26,7 +26,7 @@ export default class AccordionItemTitle extends Component {
       <h3
         aria-controls={`react-sanfona-item-body-${this.props.uuid}`}
         className={className('react-sanfona-item-title', this.props.className)}
-        id={`react-safona-item-title-${this.props.uuid}`}
+        id={`react-sanfona-item-title-${this.props.uuid}`}
         onClick={this.props.onClick}
         style={style}
       >
